@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flags App</title>
+<meta charset="windows-1252">
+<style>
+	#flag{
+		position: absolute;
+		top: 80px;
+		left: 30px;
+		border: 1px solid grey;
+	}
+</style>
+<!-- Calling D3 and JQuery libraries -->
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+	// if radio button or menu item changed
+	$('.selector').on('change', function() {
+		// get the country selected from dropdown menu 
+		var country = $("#selectFlag").val();
+		if(country == ""){
+			alert("Please select a country");
+		}
+		else{
+			// get the size selected from radio button group
+			var size = $("input:radio[name=size]:checked").val();
+			var height;				// height of the flag 
+			var width;				// width of the flag 
+			// depending on the size selected, the width and height are adjusted
+			if(size == "small"){
+				height = 200;
+				width = 150;
+			}
+			else if(size == "medium"){
+				height = 400;
+				width = 300;
+			}
+			else if(size == "large"){
+				height = 600;
+				width = 450;
+			}
+			// clear the element of any existing content 
+			document.getElementById("flag").innerHTML = "";
+			// call the function to show the flag 
+			showFlag(country, height, width, 0, 0);
+		}	
+	});
+	
+	// function to show the flag of a country based on input parameter
+	function showFlag(flag, height, width, x, y){
+		// use d3 to select the element to append the flag to 
+		var square = d3.select("#flag");
+		// array to store the colours of the flag 
+		var colours = [];
+		// variable used to determine if the flag has vertical or horizontal stripes
+		var isVertical = true;
+		// switch statement that selects the colours of the flag based on the country 
+		switch(flag){
+			case "Ireland":
+				colours = ['green', 'white', 'orange'];
+				break;
+			case "France":
+				colours = ['blue', 'white', 'red'];
+				break;
+			case "Germany":
+				colours = ['black', 'red', 'gold'];
+				isVertical = false;
+				break;
+			case "Italy":
+				colours = ['green', 'white', 'red'];
+				break;
+			case "Hungary":
+				colours = ['red', 'white', 'green'];
+				isVertical = false;
+				break;
+			case "Poland":
+				colours = ['white', 'red'];
+				isVertical = false;
+				break;
+			case "Netherlands":
+				colours = ['red', 'white', 'blue'];
+				isVertical = false;
+				break;
+			case "Bulgaria":
+				colours = ['white', 'green', 'red'];
+				isVertical = false;
+				break;
+			case "Austria":
+				colours = ['red', 'white', 'red'];
+				isVertical = false;
+				break;
+			case "Romania":
+				colours = ['darkblue', 'yellow', 'red'];
+				break;
+			case "Russia":
+				colours = ['white', 'blue', 'red'];
+				isVertical = false;
+				break;
+			case "Ukraine":
+				colours = ['blue', 'yellow'];
+				isVertical = false;
+				break;
+			case "Bolivia":
+				colours = ['red', 'yellow', 'green'];
+				isVertical = false;
+				break;
+			case "Estonia":
+				colours = ['lightsteelblue', 'black', 'white'];
+				isVertical = false;
+				break;
+			case "Lithuania":
+				colours = ['yellow', 'green', 'red'];
+				isVertical = false;
+				break;
+			case "Latvia":
+				colours = ['darkred', 'white', 'darkred'];
+				isVertical = false;
+				break;
+			case "Luxembourg":
+				colours = ['red', 'white', 'lightskyblue'];
+				isVertical = false;
+				break;
+			case "Belgium":
+				colours = ['black', 'yellow', 'red'];
+				break;
+			case "Nigeria":
+				colours = ['green', 'white', 'green'];
+				isVertical = false;
+				break;
+			case "Chad":
+				colours = ['darkblue', 'yellow', 'red'];
+				isVertical = false;
+				break;
+			case "Ivory Coast":
+				colours = ['orange', 'white', 'green'];
+				break;
+			case "Peru":
+				colours = ['red', 'white', 'red'];
+				break;
+			case "Armenia":
+				colours = ['red', 'mediumblue', 'gold'];
+				isVertical = false;
+				break;
+			case "Spain":
+				colours = ['red', 'yellow', 'red'];
+				isVertical = false;
+				break;
+			case "Portugal":
+				colours = ['green', 'red'];
+				break;
+			case "Mexico":
+				colours = ['green', 'white', 'red'];
+				break;
+		}
+		// number of colours in the flag 
+		var len = colours.length;
+		// adjust the width and height depending on the number of colours 
+		square.attr('height', height/len+'px')
+			  .attr('width', width+'px');
+			
+	    // for each colour of the flag 
+		for(i=0;i< colours.length;i++){
+			// after first colour
+			if(i > 0){
+				// if flag has vertical stripes then increment x
+				if(isVertical){
+					x = x + width/len;
+				}
+				// otherwise it has horizontal stripes so increment y 
+				else{
+					y = y + height/(len*len);
+				}
+			}				
+			// append a rectangle with the current colour and position it using x and y 
+			if(isVertical){
+				square.append('rect')
+				.attr('height', height/len+'px' )
+				.attr('width', width/len+'px' )
+				.attr('x', x)
+				.attr('y', y)
+				.attr('style', 'fill:'+colours[i]);
+			}
+			else{
+				square.append('rect')
+				.attr('height', height/(len*len)+'px' )
+				.attr('width', width+'px' )
+				.attr('x', x)
+				.attr('y', y)
+				.attr('style', 'fill:'+colours[i]);				
+			}	
+		}
+	}
+});
+</script>
+</head>
+<body >
+<form>
+	<label>Size: </label>
+	<input type="radio" value="small" name="size" checked="checked" class="selector">Small
+	<input type="radio" value="medium" name="size" class="selector">Medium
+	<input type="radio" value="large" name="size" class="selector">Large
+	<br>
+	<label>Country: </label>
+	<select id="selectFlag" class="selector">
+		<option value=""></option>
+		<option value="Armenia">Armenia</option>
+		<option value="Austria">Austria</option>
+		<option value="Belgium">Belgium</option>
+		<option value="Bolivia">Bolivia</option>
+		<option value="Bulgaria">Bulgaria</option>	
+		<option value="Chad">Chad</option>
+		<option value="Estonia">Estonia</option>
+		<option value="France">France</option>
+		<option value="Germany">Germany</option>
+		<option value="Hungary">Hungary</option>
+		<option value="Ireland">Ireland</option>
+		<option value="Italy">Italy</option>
+		<option value="Ivory Coast">Ivory Coast</option>
+		<option value="Latvia">Latvia</option>
+		<option value="Lithuania">Lithuania</option>
+		<option value="Luxembourg">Luxembourg</option>
+		<option value="Mexico">Mexico</option>
+		<option value="Netherlands">Netherlands</option>
+		<option value="Nigeria">Nigeria</option>
+		<option value="Peru">Peru</option>
+		<option value="Poland">Poland</option>
+		<option value="Portugal">Portugal</option>
+		<option value="Romania">Romania</option>
+		<option value="Russia">Russia</option>
+		<option value="Spain">Spain</option>
+		<option value="Ukraine">Ukraine</option>
+	</select>
+	<br>
+</form>
+<svg id="flag" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>
+</body>
+</html>
